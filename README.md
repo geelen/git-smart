@@ -1,4 +1,4 @@
-# git-hax
+# git-smart
 
 Adds some additional git commands to add some smarts to your workflow. These commands follow a few guidelines:
 
@@ -7,9 +7,9 @@ Adds some additional git commands to add some smarts to your workflow. These com
 0. All git commands that modify the repository should be shown to the user - hopefully this helps the user eventually learn the underlying git commands, and when they're relevant.
 0. All git commands, destructive or not, and their output should be shown to the user with the -v/--verbose flag.
 
-## git-up
+## git-smart-pull
 
-Calling 'git up' will fetch remote tracked changes and reapply your work on top of it. It's like a much, much smarter version of 'git pull --rebase'.
+Calling 'git smart-pull' will fetch remote tracked changes and reapply your work on top of it. It's like a much, much smarter version of 'git pull --rebase'.
 
 For some background as to why this is needed, see [my blog post about the perils of rebasing merge commits](https://gist.github.com/591209)
 
