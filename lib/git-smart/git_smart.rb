@@ -2,7 +2,10 @@ class GitSmart
   def self.run(code, args)
     lambda = commands[code]
     if lambda
-      lambda.call(args)
+      begin
+        lambda.call(args)
+      rescue GitSmart::RunFailed
+      end
     else
       puts "No command #{code.inspect} defined! Available commands are #{commands.keys.sort.inspect}"
     end
@@ -15,8 +18,6 @@ class GitSmart
       ExecutionContext.new.instance_exec(GitRepo.new("."), args, &blk)
     }
   end
-
-  private
 
   def self.commands
     @commands ||= {}

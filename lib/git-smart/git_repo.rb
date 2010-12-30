@@ -28,7 +28,18 @@ class GitRepo
     git('merge-base', ref_a, ref_b)
   end
 
-  private
+  def exists?(ref)
+    git('rev-parse', ref)
+    $?.success?
+  end
+
+  def rev_list(ref_a, ref_b)
+    git('rev-list', ref_a, ref_b)
+  end
+
+  def dirty?
+    git('diff-index', '--name-status', 'HEAD').empty?
+  end
 
   def git(*args)
     SafeShell.execute('git', *args)

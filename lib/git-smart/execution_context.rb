@@ -24,7 +24,16 @@ class ExecutionContext
   end
 
   def success msg
+    puts big_message(msg).green
+  end
+
+  def failure msg
+    puts big_message(msg).red
+    raise GitSmart::RunFailed
+  end
+
+  def big_message msg
     spacer_line = (" " + "-" * (msg.length + 20) + " ")
-    puts [spacer_line, "|" + " " * 10 + msg + " " * 10 + "|", spacer_line].join("\n").green
+    [spacer_line, "|" + " " * 10 + msg + " " * 10 + "|", spacer_line].join("\n")
   end
 end
