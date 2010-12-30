@@ -1,2 +1,11 @@
 #!/usr/bin/env ruby
 
+# If this was called through a symlink, follow it and determine the
+p File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/git-smart'
+  )
+)
