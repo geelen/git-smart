@@ -1,4 +1,4 @@
 GitSmart.register 'smart-pull' do |repo, args|
-  p repo.commits("better_attributes")
-  p args
+  puts repo.current_branch
+  p repo.tracking_remote
 end

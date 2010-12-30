@@ -12,7 +12,7 @@ class GitSmart
   # GitSmart.register 'my-command' do |repo, args|
   def self.register(code, &blk)
     commands[code] = lambda { |args|
-      blk.call(Grit::Repo.new("."), args)
+      blk.call(GitRepo.new("."), args)
     }
   end
 
