@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-# If this was called through a symlink, follow it and determine the
-p File.expand_path(
+# If this was called through a symlink, follow it and include the lib/git-smart.rb file
+require File.expand_path(
   File.join(
     File.dirname(File.expand_path(
       File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
@@ -9,3 +9,5 @@ p File.expand_path(
     '../lib/git-smart'
   )
 )
+
+GitSmart.run('smart-pull')
