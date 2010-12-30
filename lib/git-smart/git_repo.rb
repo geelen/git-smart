@@ -12,6 +12,10 @@ class GitRepo
     remote.empty? ? nil : remote
   end
 
+  def fetch(remote)
+    git('fetch', remote)
+  end
+
   private
 
   def git(*args)
