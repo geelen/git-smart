@@ -17,13 +17,11 @@ end
 def run_command(dir, command, args = [])
   require 'stringio'
   $stdout = stdout = StringIO.new
-  $stderr = stderr = StringIO.new
 
   Dir.chdir(dir) { GitSmart.run(command, args) }
 
   $stdout = STDOUT
-  $stderr = STDERR
-  [stdout.string.split("\n"), stderr.string.split("\n")]
+  stdout.string.split("\n")
 end
 
 RSpec::Matchers.define :report do |expected|

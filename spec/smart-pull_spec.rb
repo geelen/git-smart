@@ -22,11 +22,10 @@ describe 'smart-pull' do
 
   context "with nothing to do" do
     before :each do
-      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
-      err.should be_empty
+      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
     end
 
-    it "should assume origin/master, and nothing to do" do
+    it "should tell us there's nothing to do" do
       @out.should report("Fetching 'origin'")
       @out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
       @out.should report("Already up-to-date")
@@ -42,8 +41,7 @@ describe 'smart-pull' do
           git add .
           git commit -m 'moar'
       ]
-      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
-      err.should be_empty
+      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
     end
 
     it "should report that no remote changes were found" do
@@ -61,8 +59,7 @@ describe 'smart-pull' do
           git add .
           git commit -m 'upstream changes'
       ]
-      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
-      err.should be_empty
+      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
     end
 
     it "should report that no remote changes were found" do
