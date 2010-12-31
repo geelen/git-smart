@@ -44,9 +44,10 @@ class GitRepo
   end
 
   def status
-    git('status', '-s').
+    status_output = git('status', '-s')
+    status_output.
       split("\n").
-      map { |l| l.split(/\s/) }.
+      map { |l| l.split(" ") }.
       group_by(&:first).
       map_values { |lines| lines.map(&:last) }.
       map_keys { |status|
@@ -54,6 +55,7 @@ class GitRepo
           when /^M/: :modified
           when /^A/: :added
           when /^\?\?/: :untracked
+          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{status_output}")
         end
       }
   end

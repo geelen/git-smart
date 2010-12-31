@@ -75,7 +75,7 @@ describe 'smart-pull' do
         cd #{local_dir}
           echo "i am nub" > noob
       ]
-      "#{local_dir}".should have_git_status({:untracked => ['noob']})
+      local_dir.should have_git_status({:untracked => ['noob']})
       out = run_command(local_dir, 'smart-pull')
       out.should report("No uncommitted changes, no need to stash.")
       out.should report("git merge --ff-only origin/master")
@@ -83,6 +83,19 @@ describe 'smart-pull' do
     end
 
     it "should stash, fast forward, pop if there are local changes" do
+      %x[
+        cd #{local_dir}
+          echo "i am nub" > noob
+          echo "I make a change!" >> README
+          echo "puts 'moar codes too!'" >> lib/codes.rb
+          git add noob
+          git add README
+      ]
+      local_dir.should have_git_status({:added => ['noob'], :modified => ['README', 'lib/codes.rb']})
+      out = run_command(local_dir, 'smart-pull')
+      out.should report("No uncommitted changes, no need to stash.")
+      out.should report("git merge --ff-only origin/master")
+      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
 
     end
   end
