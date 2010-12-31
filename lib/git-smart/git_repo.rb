@@ -83,6 +83,14 @@ class GitRepo
     log_git('rebase', '-p', upstream)
   end
 
+  def log(nr)
+    git('log', '--oneline', '-n', nr.to_s).split("\n").map { |l| l.split(" ",2) }
+  end
+
+  def log_commit_messages(nr)
+    log(nr).map(&:last)
+  end
+
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
