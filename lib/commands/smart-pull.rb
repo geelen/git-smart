@@ -54,6 +54,9 @@ GitSmart.register 'smart-pull' do |repo, args|
       if merge_base == head
         puts "Local branch '#{branch}' has not moved on. Fast-forwarding..."
         repo.fast_forward!(upstream_branch)
+      else
+        note "Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'"
+        repo.rebase_preserving_merges!(upstream_branch)
       end
 
       if stash_required

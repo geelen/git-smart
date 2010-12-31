@@ -65,7 +65,7 @@ describe 'smart-pull' do
       out.should report("There is 1 new commit on master.")
       out.should report("No uncommitted changes, no need to stash.")
       out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
-      out.should report("git merge --ff-only origin/master")
+      out.should report("Executing: git merge --ff-only origin/master")
       out.should report(/Updating [^\.]+..[^\.]+/)
       out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
     end
@@ -78,7 +78,7 @@ describe 'smart-pull' do
       local_dir.should have_git_status({:untracked => ['noob']})
       out = run_command(local_dir, 'smart-pull')
       out.should report("No uncommitted changes, no need to stash.")
-      out.should report("git merge --ff-only origin/master")
+      out.should report("Executing: git merge --ff-only origin/master")
       out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
     end
 
@@ -99,6 +99,31 @@ describe 'smart-pull' do
       out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
       out.should report("Reapplying local changes...")
       out.should report("Executing: git stash pop")
+    end
+  end
+
+  context "with diverged branches" do
+    before :each do
+      %x[
+        cd #{remote_dir}
+          echo 'changed on the server!' >> README
+          git add .
+          git commit -m 'upstream changes'
+
+        cd #{local_dir}
+          echo "puts 'moar codes too!'" >> lib/codes.rb
+          git add .
+          git commit -m 'local changes'
+      ]
+    end
+
+    it "should rebase" do
+      out = run_command(local_dir, 'smart-pull')
+      out.should report("Fetching 'origin'")
+      out.should report("There is 1 new commit on master.")
+      out.should report("Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'")
+      out.should report("Executing: git rebase -p origin/master")
+      out.should report("Successfully rebased and updated refs/heads/master.")
     end
   end
 end

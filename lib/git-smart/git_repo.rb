@@ -67,8 +67,8 @@ class GitRepo
     status.any? { |k,v| k != :untracked && v.any? }
   end
 
-  def fast_forward!(ref)
-    log_git('merge', '--ff-only', ref)
+  def fast_forward!(upstream)
+    log_git('merge', '--ff-only', upstream)
   end
 
   def stash!
@@ -77,6 +77,10 @@ class GitRepo
 
   def stash_pop!
     log_git('stash', 'pop')
+  end
+
+  def rebase_preserving_merges!(upstream)
+    log_git('rebase', '-p', upstream)
   end
 
   # helper methods, left public in case other commands want to use them directly
