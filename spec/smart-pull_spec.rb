@@ -21,18 +21,34 @@ describe 'smart-pull' do
   end
 
   context "with nothing to do" do
-    before :all do
-      @out,err = run_command('smart-pull')
+    before :each do
+      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
       err.should be_empty
     end
 
-    it "should assume origin/master" do
-      @out.should report("No tracking remote configured, assuming 'origin'")
-      @out.should report("No tracking branch configured, assuming 'master'")
+    it "should assume origin/master, and nothing to do" do
+      @out.should report("Fetching 'origin'")
+      @out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
+      @out.should report("Already up-to-date")
+    end
+  end
+
+  context "with only local changes" do
+    before :each do
+      %x[
+        cd #{WORKING_DIR}/local
+          echo 'moar things!' >> README
+          echo 'puts "moar code!"' >> lib/moar.rb
+          git add .
+          git commit -m 'moar'
+      ]
+      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
+      err.should be_empty
     end
 
-    it "should report nothing to do" do
-      @out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
+    it "should report that no remote changes were found" do
+      @out.should report("Fetching 'origin'")
+      @out.should report("Remote branch 'origin/master' has not moved on.")
       @out.should report("Already up-to-date")
     end
   end

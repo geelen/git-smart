@@ -17,7 +17,13 @@ class GitRepo
   end
 
   def tracking_branch
-    config("branch.#{current_branch}.branch")
+    key   = "branch.#{current_branch}.merge"
+    value = config(key)
+    if value =~ /^refs\/heads\/(.*)$/
+      $1
+    else
+      raise GitSmart::UnexpectedOutput("Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'")
+    end
   end
 
   def fetch(remote)
@@ -25,7 +31,7 @@ class GitRepo
   end
 
   def merge_base(ref_a, ref_b)
-    git('merge-base', ref_a, ref_b)
+    git('merge-base', ref_a, ref_b).chomp
   end
 
   def exists?(ref)
