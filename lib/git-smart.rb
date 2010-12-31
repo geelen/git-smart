@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'grit'
 
 class GitSmart
 end

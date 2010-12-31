@@ -1,5 +1,4 @@
 GitSmart.register 'smart-pull' do |repo, args|
-  p repo
   # Let's begin!
   branch = repo.current_branch
   start "Starting: smart-pull on branch '#{branch}'"
@@ -15,7 +14,7 @@ GitSmart.register 'smart-pull' do |repo, args|
 
   # Fetch the remote. This pulls down all new commits from the server, not just our branch,
   # but generally that's a good thing. This is the only communication we need to do with the server.
-#  puts_with_done("Fetching '#{tracking_remote}'") { repo.fetch(tracking_remote) }
+  puts_with_done("Fetching '#{tracking_remote}'") { repo.fetch(tracking_remote) }
 
   # Try grabbing the tracking branch from the config. If it doesn't exist,
   # notify the user and choose the branch of the same name
