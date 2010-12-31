@@ -20,16 +20,11 @@ describe 'smart-pull' do
     ]
   end
 
-  context "with nothing to do" do
-    before :each do
-      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
-    end
-
-    it "should tell us there's nothing to do" do
-      @out.should report("Fetching 'origin'")
-      @out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
-      @out.should report("Already up-to-date")
-    end
+  it "should tell us there's nothing to do" do
+    out = run_command(WORKING_DIR + '/local', 'smart-pull')
+    out.should report("Fetching 'origin'")
+    out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
+    out.should report("Already up-to-date")
   end
 
   context "with only local changes" do
@@ -41,13 +36,13 @@ describe 'smart-pull' do
           git add .
           git commit -m 'moar'
       ]
-      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
     end
 
     it "should report that no remote changes were found" do
-      @out.should report("Fetching 'origin'")
-      @out.should report("Remote branch 'origin/master' has not moved on.")
-      @out.should report("Already up-to-date")
+      out = run_command(WORKING_DIR + '/local', 'smart-pull')
+      out.should report("Fetching 'origin'")
+      out.should report("Remote branch 'origin/master' has not moved on.")
+      out.should report("Already up-to-date")
     end
   end
 
@@ -59,17 +54,17 @@ describe 'smart-pull' do
           git add .
           git commit -m 'upstream changes'
       ]
-      @out = run_command(WORKING_DIR + '/local', 'smart-pull')
     end
 
     it "should report that no remote changes were found" do
-      @out.should report("Fetching 'origin'")
-      @out.should report("There is 1 new commit on master.")
-      @out.should report("No uncommitted changes, no need to stash.")
-      @out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
-      @out.should report("git merge --ff-only origin/master")
-      @out.should report(/Updating [^\.]+..[^\.]+/)
-      @out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out = run_command(WORKING_DIR + '/local', 'smart-pull')
+      out.should report("Fetching 'origin'")
+      out.should report("There is 1 new commit on master.")
+      out.should report("No uncommitted changes, no need to stash.")
+      out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
+      out.should report("git merge --ff-only origin/master")
+      out.should report(/Updating [^\.]+..[^\.]+/)
+      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
     end
   end
 end
