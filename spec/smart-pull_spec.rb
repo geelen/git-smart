@@ -93,10 +93,12 @@ describe 'smart-pull' do
       ]
       local_dir.should have_git_status({:added => ['noob'], :modified => ['README', 'lib/codes.rb']})
       out = run_command(local_dir, 'smart-pull')
-      out.should report("No uncommitted changes, no need to stash.")
-      out.should report("git merge --ff-only origin/master")
+      out.should report("Working directory dirty. Stashing...")
+      out.should report("Executing: git stash")
+      out.should report("Executing: git merge --ff-only origin/master")
       out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
-
+      out.should report("Reapplying local changes...")
+      out.should report("Executing: git stash pop")
     end
   end
 end

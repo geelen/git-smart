@@ -43,9 +43,12 @@ class GitRepo
     git('rev-list', "#{ref_a}..#{ref_b}").split("\n")
   end
 
+  def raw_status
+    git('status', '-s')
+  end
+
   def status
-    status_output = git('status', '-s')
-    status_output.
+    raw_status.
       split("\n").
       map { |l| l.split(" ") }.
       group_by(&:first).
@@ -55,7 +58,7 @@ class GitRepo
           when /^M/: :modified
           when /^A/: :added
           when /^\?\?/: :untracked
-          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{status_output}")
+          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{raw_status}")
         end
       }
   end
@@ -64,8 +67,16 @@ class GitRepo
     status.any? { |k,v| k != :untracked && v.any? }
   end
 
-  def fast_forward(ref)
+  def fast_forward!(ref)
     log_git('merge', '--ff-only', ref)
+  end
+
+  def stash!
+    log_git('stash')
+  end
+
+  def stash_pop!
+    log_git('stash', 'pop')
   end
 
   # helper methods, left public in case other commands want to use them directly
