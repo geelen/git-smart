@@ -45,9 +45,15 @@ GitSmart.register 'smart-pull' do |repo, args|
 
       stash_required = repo.dirty?
       if stash_required
-        repo.stash(:log => true)
+        repo.stash
+      else
+        puts "No uncommitted changes, no need to stash."
       end
 
+      if merge_base == head
+        puts "Local branch '#{branch}' has not moved on. Fast-forwarding."
+        repo.fast_forward(upstream_branch)
+      end
 
     end
 

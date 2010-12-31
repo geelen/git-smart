@@ -22,7 +22,7 @@ class GitRepo
     if value =~ /^refs\/heads\/(.*)$/
       $1
     else
-      raise GitSmart::UnexpectedOutput("Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'")
+      raise GitSmart::UnexpectedOutput.new("Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'")
     end
   end
 
@@ -40,15 +40,28 @@ class GitRepo
   end
 
   def rev_list(ref_a, ref_b)
-    git('rev-list', ref_a, ref_b)
+    git('rev-list', "#{ref_a}..#{ref_b}").split("\n")
   end
 
   def dirty?
-    git('diff-index', '--name-status', 'HEAD').empty?
+    git('diff-index', '--name-status', 'HEAD').split("\n").any?
   end
+
+  def fast_forward(ref)
+    log_git('merge', '--ff-only', ref)
+  end
+
+  # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
     SafeShell.execute('git', *args)
+  end
+
+  def log_git(*args)
+    puts "Executing: #{['git', *args].join(" ")}"
+    output = git(*args)
+    puts output.split("\n").map { |l| "  #{l}" }
+    output
   end
 
   def config(name)

@@ -52,4 +52,27 @@ describe 'smart-pull' do
       @out.should report("Already up-to-date")
     end
   end
+
+  context "with only remote changes" do
+    before :each do
+      %x[
+        cd #{WORKING_DIR}/remote
+          echo 'changed on the server!' >> README
+          git add .
+          git commit -m 'upstream changes'
+      ]
+      @out,err = run_command(WORKING_DIR + '/local', 'smart-pull')
+      err.should be_empty
+    end
+
+    it "should report that no remote changes were found" do
+      @out.should report("Fetching 'origin'")
+      @out.should report("There is 1 new commit on master.")
+      @out.should report("No uncommitted changes, no need to stash.")
+      @out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
+      @out.should report("git merge --ff-only origin/master")
+      @out.should report(/Updating [^\.]+..[^\.]+/)
+      @out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+    end
+  end
 end
