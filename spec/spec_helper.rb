@@ -1,6 +1,6 @@
 require 'ruby-debug'
 
-require File.dirname(__FILE__) + '/../lib/git-smart.rb'
+require File.dirname(__FILE__) + '/../lib/git-smart'
 
 WORKING_DIR = File.dirname(__FILE__) + '/working'
 
@@ -33,5 +33,18 @@ RSpec::Matchers.define :report do |expected|
   end
   match do |actual|
     actual.any? { |line| line[expected] }
+  end
+end
+
+
+RSpec::Matchers.define :have_git_status do |expected|
+  failure_message_for_should do |dir|
+    "expected '#{dir}' to have git status of #{expected.inspect}, got #{GitRepo.new(dir).status.inspect}"
+  end
+  failure_message_for_should_not do |actual|
+    "expected '#{dir}' to not have git status of #{expected.inspect}, got #{GitRepo.new(dir).status.inspect}"
+  end
+  match do |dir|
+    GitRepo.new(dir).status == expected
   end
 end

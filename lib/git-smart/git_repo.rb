@@ -43,8 +43,23 @@ class GitRepo
     git('rev-list', "#{ref_a}..#{ref_b}").split("\n")
   end
 
+  def status
+    git('status', '-s').
+      split("\n").
+      map { |l| l.split(/\s/) }.
+      group_by(&:first).
+      map_values { |lines| lines.map(&:last) }.
+      map_keys { |status|
+        case status
+          when /^M/: :modified
+          when /^A/: :added
+          when /^\?\?/: :untracked
+        end
+      }
+  end
+
   def dirty?
-    git('diff-index', '--name-status', 'HEAD').split("\n").any?
+    status.any? { |k,v| k != :untracked && v.any? }
   end
 
   def fast_forward(ref)
@@ -54,7 +69,7 @@ class GitRepo
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
-    SafeShell.execute('git', *args)
+    Dir.chdir(@dir) { SafeShell.execute('git', *args) }
   end
 
   def log_git(*args)
