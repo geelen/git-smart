@@ -56,7 +56,7 @@ describe 'smart-pull' do
       ]
     end
 
-    it "should report that no remote changes were found" do
+    it "should fast-forward" do
       out = run_command(WORKING_DIR + '/local', 'smart-pull')
       out.should report("Fetching 'origin'")
       out.should report("There is 1 new commit on master.")
@@ -65,6 +65,21 @@ describe 'smart-pull' do
       out.should report("git merge --ff-only origin/master")
       out.should report(/Updating [^\.]+..[^\.]+/)
       out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+    end
+
+    it "should not stash before fast-forwarding if untracked files are present" do
+      %x[
+        cd #{WORKING_DIR}/local
+          echo "i am nub" > noob
+      ]
+      out = run_command(WORKING_DIR + '/local', 'smart-pull')
+      out.should report("No uncommitted changes, no need to stash.")
+      out.should report("git merge --ff-only origin/master")
+      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+    end
+
+    it "should stash, fast forward, pop if there are local changes" do
+
     end
   end
 end
