@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'trollop'
-
 class GitSmartBinary
   USAGE = %Q{Usage:
     git-smart list                          List all the git commands that can be installed
@@ -33,7 +31,7 @@ class GitSmartBinary
            else
              args
            end
-    install_dir = File.dirname(`which git`)
+    install_dir = get_install_dir
     puts "Installing #{cmds.join(', ')} to #{install_dir}:"
     cmds.each { |cmd|
       filename = "#{install_dir}/git-#{cmd}"
@@ -43,12 +41,23 @@ class GitSmartBinary
 require 'rubygems'
 require 'git-smart'
 
-GitSmart.run(#{cmd}, ARGV)
+GitSmart.run('#{cmd}', ARGV)
 }
       }
       `chmod a+x #{filename}`
       puts "Wrote #{filename}"
     }
+  end
+
+  private
+
+  def get_install_dir
+    home_bin = File.expand_path('~/bin')
+    if File.exists?(home_bin) && ENV['PATH'].split(':').include?(home_bin)
+      home_bin
+    else
+      '/usr/local/bin'
+    end
   end
 end
 
