@@ -7,6 +7,32 @@ Adds some additional git commands to add some smarts to your workflow. These com
 0. All git commands that modify the repository should be shown to the user - hopefully this helps the user eventually learn the underlying git commands, and when they're relevant.
 0. All git commands, destructive or not, and their output should be shown to the user with the -v/--verbose flag.
 
+# Installing
+
+First, grab the gem:
+
+    gem install git-smart
+
+List the commands you can install (currently only the one):
+
+    git-smart list
+
+Install away!
+
+    git-smart install smart-pull
+    
+OR
+
+    git-smart install --all
+
+That'll put an executable file for each command in your ~/bin directory if that exists and is on the path, /usr/local/bin otherwise.
+
+# Using
+
+Git allows custom commands with a simple convention - `git xyz` tries to find an executable `git-xyz` on the path. So, to run the smart-pull command, simply run:
+
+    git smart-pull
+
 ## git-smart-pull
 
 Calling 'git smart-pull' will fetch remote tracked changes and reapply your work on top of it. It's like a much, much smarter version of 'git pull --rebase'.
@@ -25,8 +51,7 @@ This is how it works:
     0. rebase -p onto the remote
     0. stash pop
     0. update ORIG\_HEAD to be the previous local HEAD, as expected (rebase -p doesn't set ORIG\_HEAD correctly)
-0. Output a summary of what just happened, as well as any new or updated branches that came down with the last fetch.
-0. Output a big, green GIT UP GOOD or red GIT UP BAD, depending on how things went.
+0. Output a big green or red message so, at a glance, you know if things worked or not.
 
 # Contributing to git-smart
 
