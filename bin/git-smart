@@ -62,7 +62,7 @@ GitSmart.run('#{cmd}', ARGV)
 end
 
 case ARGV.shift
-  when 'list': GitSmartBinary.new.list
-  when 'install': GitSmartBinary.new.install(ARGV)
+  when 'list'; GitSmartBinary.new.list
+  when 'install'; GitSmartBinary.new.install(ARGV)
   else puts GitSmartBinary::USAGE
 end
