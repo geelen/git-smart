@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'trollop'
+
+class GitSmartBinary
+  USAGE = %Q{Usage:
+    git-smart list                          List all the git commands that can be installed
+    git-smart install --all                 Install all git commands
+    git-smart install command [command]     Install these git commands
+  }
+
+  def initialize
+    # If this was called through a symlink, follow it and include the lib/git-smart.rb file
+    require File.expand_path(
+      File.join(
+        File.dirname(File.expand_path(
+          File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+        )),
+        '../lib/git-smart'
+      )
+    )
+  end
+
+  def list
+    puts "These commands available to install:"
+    puts GitSmart.commands.keys.map { |c| "  git-smart install " + c }.join("\n")
+    puts "\nOr install everything with: git-smart install --all"
+  end
+
+  def install(args)
+    cmds = if args.include? '--all'
+             GitSmart.commands.keys
+           else
+             args
+           end
+    install_dir = File.dirname(`which git`)
+    puts "Installing #{cmds.join(', ')} to #{install_dir}:"
+    cmds.each { |cmd|
+      filename = "#{install_dir}/git-#{cmd}"
+      File.open(filename, 'w') { |out|
+        out.puts %Q{#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'git-smart'
+
+GitSmart.run(#{cmd}, ARGV)
+}
+      }
+      `chmod a+x #{filename}`
+      puts "Wrote #{filename}"
+    }
+  end
+end
+
+case ARGV.shift
+  when 'list': GitSmartBinary.new.list
+  when 'install': GitSmartBinary.new.install(ARGV)
+  else puts GitSmartBinary::USAGE
+end
