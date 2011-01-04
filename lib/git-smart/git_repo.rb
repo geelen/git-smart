@@ -22,7 +22,9 @@ class GitRepo
   def tracking_branch
     key   = "branch.#{current_branch}.merge"
     value = config(key)
-    if value =~ /^refs\/heads\/(.*)$/
+    if value.nil?
+      value
+    elsif value =~ /^refs\/heads\/(.*)$/
       $1
     else
       raise GitSmart::UnexpectedOutput.new("Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'")
