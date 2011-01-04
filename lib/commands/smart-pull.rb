@@ -14,7 +14,7 @@ GitSmart.register 'smart-pull' do |repo, args|
 
   # Fetch the remote. This pulls down all new commits from the server, not just our branch,
   # but generally that's a good thing. This is the only communication we need to do with the server.
-  puts_with_done("Fetching '#{tracking_remote}'") { repo.fetch(tracking_remote) }
+  repo.fetch!(tracking_remote)
 
   # Try grabbing the tracking branch from the config. If it doesn't exist,
   # notify the user and choose the branch of the same name
@@ -51,18 +51,24 @@ GitSmart.register 'smart-pull' do |repo, args|
         puts "No uncommitted changes, no need to stash."
       end
 
+      success_messages = []
+
       if merge_base == head
         puts "Local branch '#{branch}' has not moved on. Fast-forwarding..."
         repo.fast_forward!(upstream_branch)
+        success_messages << "Fast forwarded from #{head[0,7]} to #{remote[0,7]}"
       else
         note "Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'"
         repo.rebase_preserving_merges!(upstream_branch)
+        success_messages << "HEAD moved from #{head[0,7]} to #{repo.sha('HEAD')[0,7]}."
       end
 
       if stash_required
         note "Reapplying local changes..."
         repo.stash_pop!
       end
+
+      success ["All good.", *success_messages].join(" ")
     end
 
   end

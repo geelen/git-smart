@@ -25,7 +25,7 @@ describe 'smart-pull' do
 
   it "should tell us there's nothing to do" do
     out = run_command(local_dir, 'smart-pull')
-    out.should report("Fetching 'origin'")
+    out.should report("Executing: git fetch origin")
     out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
     out.should report("Already up-to-date")
   end
@@ -43,7 +43,7 @@ describe 'smart-pull' do
 
     it "should report that no remote changes were found" do
       out = run_command(local_dir, 'smart-pull')
-      out.should report("Fetching 'origin'")
+      out.should report("Executing: git fetch origin")
       out.should report("Remote branch 'origin/master' has not moved on.")
       out.should report("Already up-to-date")
     end
@@ -61,7 +61,8 @@ describe 'smart-pull' do
 
     it "should fast-forward" do
       out = run_command(local_dir, 'smart-pull')
-      out.should report("Fetching 'origin'")
+      out.should report("Executing: git fetch origin")
+      out.should report(/master +-> +origin\/master/)      
       out.should report("There is 1 new commit on master.")
       out.should report("No uncommitted changes, no need to stash.")
       out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
@@ -119,7 +120,8 @@ describe 'smart-pull' do
 
     it "should rebase" do
       out = run_command(local_dir, 'smart-pull')
-      out.should report("Fetching 'origin'")
+      out.should report("Executing: git fetch origin")
+      out.should report(/master +-> +origin\/master/)
       out.should report("There is 1 new commit on master.")
       out.should report("Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'")
       out.should report("Executing: git rebase -p origin/master")

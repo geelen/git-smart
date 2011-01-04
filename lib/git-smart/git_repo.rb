@@ -26,8 +26,8 @@ class GitRepo
     end
   end
 
-  def fetch(remote)
-    git('fetch', remote)
+  def fetch!(remote)
+    log_git('fetch', remote)
   end
 
   def merge_base(ref_a, ref_b)
