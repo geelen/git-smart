@@ -4,7 +4,10 @@ class GitSmart
     if lambda
       begin
         lambda.call(args)
-      rescue GitSmart::RunFailed
+      rescue GitSmart::Exception => e
+        if e.message && !e.message.empty?
+          puts e.message.red
+        end
       end
     else
       puts "No command #{code.inspect} defined! Available commands are #{commands.keys.sort.inspect}"

@@ -62,7 +62,7 @@ describe 'smart-pull' do
     it "should fast-forward" do
       out = run_command(local_dir, 'smart-pull')
       out.should report("Executing: git fetch origin")
-      out.should report(/master +-> +origin\/master/)      
+      out.should report(/master +-> +origin\/master/)
       out.should report("There is 1 new commit on master.")
       out.should report("No uncommitted changes, no need to stash.")
       out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
