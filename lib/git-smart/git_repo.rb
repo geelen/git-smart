@@ -97,7 +97,10 @@ class GitRepo
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
-    Dir.chdir(@dir) { SafeShell.execute('git', *args) }
+    Dir.chdir(@dir) {
+      output = SafeShell.execute('git', *args)
+      $?.success? ? output : ''
+    }
   end
 
   def log_git(*args)
