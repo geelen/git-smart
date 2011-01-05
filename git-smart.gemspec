@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "VERSION",
+    "bin/git-smart-merge",
+    "bin/git-smart-pull",
     "docs/images/git-smart.png",
     "docs/smart-merge.html",
     "docs/smart-pull.html",
