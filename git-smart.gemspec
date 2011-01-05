@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-smart}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glen Maddern"]
-  s.date = %q{2011-01-04}
+  s.date = %q{2011-01-05}
   s.default_executable = %q{git-smart}
   s.description = %q{Installs some additional 'smart' git commands, like `git smart-pull`.}
   s.email = %q{glenmaddern@gmail.com}
@@ -26,7 +26,11 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/git-smart",
+    "docs/images/git-smart.png",
+    "docs/smart-merge.html",
+    "docs/smart-pull.html",
     "git-smart.gemspec",
+    "lib/commands/smart-merge.rb",
     "lib/commands/smart-pull.rb",
     "lib/core_ext/array.rb",
     "lib/core_ext/hash.rb",
@@ -37,6 +41,8 @@ Gem::Specification.new do |s|
     "lib/git-smart/git_repo.rb",
     "lib/git-smart/git_smart.rb",
     "lib/git-smart/safe_shell.rb",
+    "spec/smart-merge_failures_spec.rb",
+    "spec/smart-merge_spec.rb",
     "spec/smart-pull_spec.rb",
     "spec/spec_helper.rb"
   ]
@@ -46,6 +52,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Add some smarts to your git workflow}
   s.test_files = [
+    "spec/smart-merge_failures_spec.rb",
+    "spec/smart-merge_spec.rb",
     "spec/smart-pull_spec.rb",
     "spec/spec_helper.rb"
   ]
@@ -60,12 +68,14 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_development_dependency(%q<rocco>, [">= 0"])
     else
       s.add_dependency(%q<colorize>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_dependency(%q<rocco>, [">= 0"])
     end
   else
     s.add_dependency(%q<colorize>, [">= 0"])
@@ -73,6 +83,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+    s.add_dependency(%q<rocco>, [">= 0"])
   end
 end
 
