@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>smart-pull.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="smart-merge.html">smart-merge.rb</a>
+          <a class="source" href="smart-pull.html">smart-pull.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>smart-pull.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>Calling <code>git smart-pull</code> will fetch remote tracked changes
+and reapply your work on top of it. It&rsquo;s like a much, much
+smarter version of <code>git pull --rebase</code>.</p>
+
+<p>For some background as to why this is needed, see <a href="https://gist.github.com/591209">my blog
+post about the perils of rebasing merge commits</a></p>
+
+<p>This is how it works:</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="no">GitSmart</span><span class="o">.</span><span class="n">register</span> <span class="s1">&#39;smart-pull&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">repo</span><span class="p">,</span> <span class="n">args</span><span class="o">|</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        <p>Let&rsquo;s begin!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">current_branch</span>
+  <span class="n">start</span> <span class="s2">&quot;Starting: smart-pull on branch &#39;</span><span class="si">#{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&#39;&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        <p>Let&rsquo;s not have any arguments, fellas.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nb">warn</span> <span class="s2">&quot;Ignoring arguments: </span><span class="si">#{</span><span class="n">args</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="o">!</span><span class="n">args</span><span class="o">.</span><span class="n">empty?</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        <p>Try grabbing the tracking remote from the config. If it doesn&rsquo;t exist,
+notify the user and default to &lsquo;origin&rsquo;</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">tracking_remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">tracking_remote</span> <span class="o">||</span>
+    <span class="n">note</span><span class="p">(</span><span class="s2">&quot;No tracking remote configured, assuming &#39;origin&#39;&quot;</span><span class="p">)</span> <span class="o">||</span>
+    <span class="s1">&#39;origin&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        <p> Fetch the remote. This pulls down all new commits from the server, not just our branch,
+ but generally that&rsquo;s a good thing. This is the only communication we need to do with the server.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">repo</span><span class="o">.</span><span class="n">fetch!</span><span class="p">(</span><span class="n">tracking_remote</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        <p>Try grabbing the tracking branch from the config. If it doesn&rsquo;t exist,
+notify the user and choose the branch of the same name</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">tracking_branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">tracking_branch</span> <span class="o">||</span>
+    <span class="n">note</span><span class="p">(</span><span class="s2">&quot;No tracking branch configured, assuming &#39;</span><span class="si">#{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="o">||</span>
+    <span class="n">branch</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        <p>Check the specified upstream branch exists. Fail if it doesn&rsquo;t.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">upstream_branch</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">tracking_remote</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">tracking_branch</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="n">failure</span><span class="p">(</span><span class="s2">&quot;Upstream branch &#39;</span><span class="si">#{</span><span class="n">upstream_branch</span><span class="si">}</span><span class="s2">&#39; doesn&#39;t exist!&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="o">!</span><span class="n">repo</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="n">upstream_branch</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        <p>Grab the SHAs of the commits we&rsquo;ll be working with.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">head</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">)</span>
+  <span class="n">remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="n">upstream_branch</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        <p>If both HEAD and our upstream_branch resolve to the same SHA, there&rsquo;s nothing to do!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">if</span> <span class="n">head</span> <span class="o">==</span> <span class="n">remote</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Neither your local branch &#39;</span><span class="si">#{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&#39;, nor the remote branch &#39;</span><span class="si">#{</span><span class="n">upstream_branch</span><span class="si">}</span><span class="s2">&#39; have moved on.&quot;</span>
+    <span class="n">success</span> <span class="s2">&quot;Already up-to-date&quot;</span>
+  <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        <p>Find out where the two branches diverged using merge-base. It&rsquo;s what git
+uses internally.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">merge_base</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">merge_base</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">remote</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        <p>By comparing the merge_base to both HEAD and the remote, we can
+determine whether both or only one have moved on.
+If the remote hasn&rsquo;t changed, we&rsquo;re already up to date, so there&rsquo;s nothing
+to pull.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">merge_base</span> <span class="o">==</span> <span class="n">remote</span>
+      <span class="nb">puts</span> <span class="s2">&quot;Remote branch &#39;</span><span class="si">#{</span><span class="n">upstream_branch</span><span class="si">}</span><span class="s2">&#39; has not moved on.&quot;</span>
+      <span class="n">success</span> <span class="s2">&quot;Already up-to-date&quot;</span>
+    <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-12">#</a>
+        </div>
+        <p>If the remote <em>has</em> moved on, we actually have some work to do:</p>
+
+<p>First, report how many commits are new on remote. Because that&rsquo;s useful information.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">new_commits_on_remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_list</span><span class="p">(</span><span class="n">merge_base</span><span class="p">,</span> <span class="n">remote</span><span class="p">)</span>
+      <span class="n">is_are</span><span class="p">,</span> <span class="n">s_or_not</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_commits_on_remote</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">?</span> <span class="o">[</span><span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">]</span> <span class="p">:</span> <span class="o">[</span><span class="s1">&#39;are&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="o">]</span>
+      <span class="n">note</span> <span class="s2">&quot;There </span><span class="si">#{</span><span class="n">is_are</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">new_commits_on_remote</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> new commit</span><span class="si">#{</span><span class="n">s_or_not</span><span class="si">}</span><span class="s2"> on &#39;</span><span class="si">#{</span><span class="n">upstream_branch</span><span class="si">}</span><span class="s2">&#39;.&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-13">#</a>
+        </div>
+        <p>Next, detect if there are local changes and stash them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">stash_required</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">dirty?</span>
+      <span class="k">if</span> <span class="n">stash_required</span>
+        <span class="n">note</span> <span class="s2">&quot;Working directory dirty. Stashing...&quot;</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">stash!</span>
+      <span class="k">end</span>
+
+      <span class="n">success_messages</span> <span class="o">=</span> <span class="o">[]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-14">#</a>
+        </div>
+        <p>Then, bring the local branch up to date.</p>
+
+<p>If our local branch hasn&rsquo;t moved on, that&rsquo;s easy &ndash; we just need to fast-forward.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">if</span> <span class="n">merge_base</span> <span class="o">==</span> <span class="n">head</span>
+        <span class="nb">puts</span> <span class="s2">&quot;Local branch &#39;</span><span class="si">#{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&#39; has not moved on. Fast-forwarding...&quot;</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">fast_forward!</span><span class="p">(</span><span class="n">upstream_branch</span><span class="p">)</span>
+        <span class="n">success_messages</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Fast forwarded from </span><span class="si">#{</span><span class="n">head</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">remote</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-15">#</a>
+        </div>
+        <p>If our local branch has new commits, we need to rebase them on top of master.</p>
+
+<p>When we rebase, we use <code>git rebase -p</code>, which attempts to recreate merges
+instead of ignoring them. For a description as to why, see my <a href="(https://gist.github.com/591209">blog post</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">note</span> <span class="s2">&quot;Both local and remote branches have moved on. Branch &#39;master&#39; needs to be rebased onto &#39;origin/master&#39;&quot;</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">rebase_preserving_merges!</span><span class="p">(</span><span class="n">upstream_branch</span><span class="p">)</span>
+        <span class="n">success_messages</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;HEAD moved from </span><span class="si">#{</span><span class="n">head</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-16">#</a>
+        </div>
+        <p>If we stashed before, pop now.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">if</span> <span class="n">stash_required</span>
+        <span class="n">note</span> <span class="s2">&quot;Reapplying local changes...&quot;</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">stash_pop!</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-17">#</a>
+        </div>
+        <p>Display a nice completion message in large, friendly letters.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">success</span> <span class="o">[</span><span class="s2">&quot;All good.&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">success_messages</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
