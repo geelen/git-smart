@@ -32,7 +32,7 @@ class GitRepo
   end
 
   def fetch!(remote)
-    log_git('fetch', remote)
+    git!('fetch', remote)
   end
 
   def merge_base(ref_a, ref_b)
@@ -63,6 +63,7 @@ class GitRepo
           when /^M/; :modified
           when /^A/; :added
           when /^\?\?/; :untracked
+          when /^UU/; :conflicted
           else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{raw_status}")
         end
       }
@@ -73,19 +74,19 @@ class GitRepo
   end
 
   def fast_forward!(upstream)
-    log_git('merge', '--ff-only', upstream)
+    git!('merge', '--ff-only', upstream)
   end
 
   def stash!
-    log_git('stash')
+    git!('stash')
   end
 
   def stash_pop!
-    log_git('stash', 'pop')
+    git!('stash', 'pop')
   end
 
   def rebase_preserving_merges!(upstream)
-    log_git('rebase', '-p', upstream)
+    git!('rebase', '-p', upstream)
   end
 
   def log(nr)
@@ -97,27 +98,34 @@ class GitRepo
   end
 
   def merge_no_ff!(target)
-    log_git('merge', '--no-ff', target)
+    git!('merge', '--no-ff', target)
   end
 
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
-    Dir.chdir(@dir) {
-      output = SafeShell.execute('git', *args)
-      $?.success? ? output : ''
-    }
+    output = exec_git(*args)
+    $?.success? ? output : ''
   end
 
-  def log_git(*args)
+  def git!(*args)
     puts "Executing: #{['git', *args].join(" ")}"
-    output = git(*args)
-    puts output.split("\n").map { |l| "  #{l}" }
+    output = exec_git(*args)
+    to_display = output.split("\n").map { |l| "  #{l}" }.join("\n")
+    $?.success? ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
     output
   end
 
   def config(name)
     remote = git('config', name).chomp
     remote.empty? ? nil : remote
+  end
+
+  private
+
+  def exec_git(*args)
+    Dir.chdir(@dir) {
+      SafeShell.execute('git', *args)
+    }
   end
 end

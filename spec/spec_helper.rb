@@ -6,6 +6,7 @@ WORKING_DIR = File.dirname(__FILE__) + '/working'
 
 RSpec.configure do |config|
   config.before :each do
+    FileUtils.rm_rf WORKING_DIR
     FileUtils.mkdir_p WORKING_DIR
   end
 
