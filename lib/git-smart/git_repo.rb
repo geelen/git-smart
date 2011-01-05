@@ -96,7 +96,7 @@ class GitRepo
     log(nr).map(&:last)
   end
 
-  def merge!(target)
+  def merge_no_ff!(target)
     log_git('merge', '--no-ff', target)
   end
 

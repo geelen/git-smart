@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>smart-merge.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="smart-merge.html">smart-merge.rb</a>
+          <a class="source" href="smart-pull.html">smart-pull.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>smart-merge.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>Calling <code>git smart-merge branchname</code> will, quite simply, perform a
+non-fast-forward merge wrapped in a stash push/pop, if that&rsquo;s required.
+With some helpful extra output.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="no">GitSmart</span><span class="o">.</span><span class="n">register</span> <span class="s1">&#39;smart-merge&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">repo</span><span class="p">,</span> <span class="n">args</span><span class="o">|</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        <p>Let&rsquo;s begin!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">current_branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">current_branch</span>
+  <span class="n">start</span> <span class="s2">&quot;Starting: smart-merge on branch &#39;</span><span class="si">#{</span><span class="n">current_branch</span><span class="si">}</span><span class="s2">&#39;&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        <p>Grab the merge_target the user specified</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">merge_target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">shift</span>
+  <span class="n">failure</span> <span class="s2">&quot;Usage: git smart-merge ref&quot;</span> <span class="k">if</span> <span class="o">!</span><span class="n">merge_target</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        <p>Make sure git can resolve the reference to the merge_target</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">merge_sha</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="n">merge_target</span><span class="p">)</span>
+  <span class="n">failure</span> <span class="s2">&quot;Branch to merge &#39;</span><span class="si">#{</span><span class="n">merge_target</span><span class="si">}</span><span class="s2">&#39; not recognised by git!&quot;</span> <span class="k">if</span> <span class="o">!</span><span class="n">merge_sha</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        <p>If the SHA of HEAD and the merge_target are the same, we&rsquo;re trying to merge
+the same commit with itself. Which is madness!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">head</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">merge_sha</span> <span class="o">==</span> <span class="n">head</span>
+    <span class="n">note</span> <span class="s2">&quot;Branch &#39;</span><span class="si">#{</span><span class="n">merge_target</span><span class="si">}</span><span class="s2">&#39; has no new commits. Nothing to merge in.&quot;</span>
+    <span class="n">success</span> <span class="s1">&#39;Already up-to-date.&#39;</span>
+  <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        <p>Determine the merge-base of the two commits, so we can report some useful output
+about how many new commits have been added.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">merge_base</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">merge_base</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">merge_sha</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        <p>Report the number of commits on merge_target we&rsquo;re about to merge in.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">new_commits_on_merge_target</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_list</span><span class="p">(</span><span class="n">merge_base</span><span class="p">,</span> <span class="n">merge_target</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Branch &#39;</span><span class="si">#{</span><span class="n">merge_target</span><span class="si">}</span><span class="s2">&#39; has diverged by </span><span class="si">#{</span><span class="n">new_commits_on_merge_target</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> commit</span><span class="si">#{</span><span class="s1">&#39;s&#39;</span> <span class="k">if</span> <span class="n">new_commits_on_merge_target</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="mi">1</span><span class="si">}</span><span class="s2">. Merging in.&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        <p>Determine if our branch has moved on.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">head</span> <span class="o">==</span> <span class="n">merge_base</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        <p>Note: Even though we <em>can</em> fast-forward here, it&rsquo;s a really bad idea since
+it results in the disappearance of the branch in history. For a good discussion
+on this topic, see this <a href="http://stackoverflow.com/questions/2850369/why-uses-git-fast-forward-merging-per-default">StackOverflow question</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">note</span> <span class="s2">&quot;Branch &#39;</span><span class="si">#{</span><span class="n">current_branch</span><span class="si">}</span><span class="s2">&#39; has not moved on since &#39;</span><span class="si">#{</span><span class="n">merge_target</span><span class="si">}</span><span class="s2">&#39; diverged. Running with --no-ff anyway, since a fast-forward is unexpected behaviour.&quot;</span>
+    <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        <p>Report how many commits on our branch since merge_target diverged.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">new_commits_on_branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_list</span><span class="p">(</span><span class="n">merge_base</span><span class="p">,</span> <span class="n">head</span><span class="p">)</span>
+      <span class="nb">puts</span> <span class="s2">&quot;Branch &#39;</span><span class="si">#{</span><span class="n">current_branch</span><span class="si">}</span><span class="s2">&#39; has </span><span class="si">#{</span><span class="n">new_commits_on_branch</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> new commit</span><span class="si">#{</span><span class="s1">&#39;s&#39;</span> <span class="k">if</span> <span class="n">new_commits_on_merge_target</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="mi">1</span><span class="si">}</span><span class="s2"> since &#39;</span><span class="si">#{</span><span class="n">merge_target</span><span class="si">}</span><span class="s2">&#39; diverged.&quot;</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        <p>Before we merge, detect if there are local changes and stash them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">stash_required</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">dirty?</span>
+    <span class="k">if</span> <span class="n">stash_required</span>
+      <span class="n">note</span> <span class="s2">&quot;Working directory dirty. Stashing...&quot;</span>
+      <span class="n">repo</span><span class="o">.</span><span class="n">stash!</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-12">#</a>
+        </div>
+        <p>Perform the merge, using &mdash;no-ff.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">repo</span><span class="o">.</span><span class="n">merge_no_ff!</span><span class="p">(</span><span class="n">merge_target</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-13">#</a>
+        </div>
+        <p>If we stashed before, pop now.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">stash_required</span>
+      <span class="n">note</span> <span class="s2">&quot;Reapplying local changes...&quot;</span>
+      <span class="n">repo</span><span class="o">.</span><span class="n">stash_pop!</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-14">#</a>
+        </div>
+        <p>Display a nice completion message in large, friendly letters.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">success</span> <span class="s2">&quot;All good. Created merge commit </span><span class="si">#{</span><span class="n">repo</span><span class="o">.</span><span class="n">sha</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

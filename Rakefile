@@ -44,3 +44,10 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+desc "Generate the rocco docs"
+task :rocco do
+  %x[cd lib/commands && rocco *.rb -o ../../docs]
+end
+
+task :release => :rocco
