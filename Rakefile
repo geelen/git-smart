@@ -54,9 +54,13 @@ task :release => :rocco
 
 desc "Generate a binary for each of our commands"
 task :generate_binaries do
-  require File.join(File.dirname(__FILE__), 'lib', 'git-smart')
+  base_dir = File.dirname(__FILE__)
+  require "#{base_dir}/lib/git-smart"
+
+  require 'fileutils'
+  FileUtils.mkdir_p "#{base_dir}/bin"
   GitSmart.commands.keys.each { |cmd|
-    filename = "#{File.dirname(__FILE__)}/bin/git-#{cmd}"
+    filename = "#{base_dir}/bin/git-#{cmd}"
     File.open(filename, 'w') { |out|
       out.puts %Q{#!/usr/bin/env ruby
 

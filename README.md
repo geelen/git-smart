@@ -11,23 +11,11 @@ Adds some additional git commands to add some smarts to your workflow. These com
 
 # Installing
 
-First, grab the gem:
+All you need to do is grab the gem:
 
     gem install git-smart
 
-List the commands you can install (currently only the one):
-
-    git-smart list
-
-Install away!
-
-    git-smart install smart-pull
-
-OR
-
-    git-smart install --all
-
-That'll put an executable file for each command in your ~/bin directory if that exists and is on the path, /usr/local/bin otherwise.
+That'll put an executable file for each command as a gem executable. They can be removed by uninstalling the gem.
 
 # Using
 
