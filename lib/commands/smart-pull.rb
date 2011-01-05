@@ -48,6 +48,12 @@ GitSmart.register 'smart-pull' do |repo, args|
     #uses internally.
     merge_base = repo.merge_base(head, remote)
 
+    #Report how many commits are new locally, since that's useful information.
+    new_commits_locally = repo.rev_list(merge_base, head)
+    if !new_commits_locally.empty?
+      note "You have #{new_commits_locally.length} new commit#{'s' if new_commits_locally.length != 1} on '#{branch}'."
+    end
+
     #By comparing the merge_base to both HEAD and the remote, we can
     #determine whether both or only one have moved on.
     #If the remote hasn't changed, we're already up to date, so there's nothing
@@ -58,7 +64,7 @@ GitSmart.register 'smart-pull' do |repo, args|
     else
       #If the remote _has_ moved on, we actually have some work to do:
       #
-      #First, report how many commits are new on remote. Because that's useful information.
+      #First, report how many commits are new on remote. Because that's useful information, too.
       new_commits_on_remote = repo.rev_list(merge_base, remote)
       is_are, s_or_not = (new_commits_on_remote.length == 1) ? ['is', ''] : ['are', 's']
       note "There #{is_are} #{new_commits_on_remote.length} new commit#{s_or_not} on '#{upstream_branch}'."

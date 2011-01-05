@@ -45,6 +45,7 @@ describe 'smart-pull' do
       out = run_command(local_dir, 'smart-pull')
       out.should report("Executing: git fetch origin")
       out.should report("Remote branch 'origin/master' has not moved on.")
+      out.should report("You have 1 new commit on 'master'.")
       out.should report("Already up-to-date")
     end
   end
@@ -121,6 +122,7 @@ describe 'smart-pull' do
       out.should report("Executing: git fetch origin")
       out.should report(/master +-> +origin\/master/)
       out.should report("There is 1 new commit on 'origin/master'.")
+      out.should report("You have 1 new commit on 'master'.")
       out.should report("Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'")
       out.should report("Executing: git rebase -p origin/master")
       out.should report("Successfully rebased and updated refs/heads/master.")
