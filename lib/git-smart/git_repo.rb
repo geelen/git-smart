@@ -96,6 +96,10 @@ class GitRepo
     log(nr).map(&:last)
   end
 
+  def merge!(target)
+    log_git('merge', '--no-ff', target)
+  end
+
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
