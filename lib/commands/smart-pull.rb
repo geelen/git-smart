@@ -41,14 +41,12 @@ GitSmart.register 'smart-pull' do |repo, args|
     else
       new_commits_on_remote = repo.rev_list(merge_base, remote)
       is_are, s_or_not = (new_commits_on_remote.length == 1) ? ['is', ''] : ['are', 's']
-      note "There #{is_are} #{new_commits_on_remote.length} new commit#{s_or_not} on master."
+      note "There #{is_are} #{new_commits_on_remote.length} new commit#{s_or_not} on '#{upstream_branch}'."
 
       stash_required = repo.dirty?
       if stash_required
         note "Working directory dirty. Stashing..."
         repo.stash!
-      else
-        puts "No uncommitted changes, no need to stash."
       end
 
       success_messages = []

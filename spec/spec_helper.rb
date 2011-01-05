@@ -14,7 +14,7 @@ RSpec.configure do |config|
   end
 end
 
-def run_command(dir, command, args = [])
+def run_command(dir, command, *args)
   require 'stringio'
   $stdout = stdout = StringIO.new
 
