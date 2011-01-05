@@ -161,6 +161,20 @@ uses internally.</p>
         <div class="octowrap">
           <a class="octothorpe" href="#section-11">#</a>
         </div>
+        <p>Report how many commits are new locally, since that&rsquo;s useful information.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">new_commits_locally</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_list</span><span class="p">(</span><span class="n">merge_base</span><span class="p">,</span> <span class="n">head</span><span class="p">)</span>
+    <span class="k">if</span> <span class="o">!</span><span class="n">new_commits_locally</span><span class="o">.</span><span class="n">empty?</span>
+      <span class="n">note</span> <span class="s2">&quot;You have </span><span class="si">#{</span><span class="n">new_commits_locally</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> new commit</span><span class="si">#{</span><span class="s1">&#39;s&#39;</span> <span class="k">if</span> <span class="n">new_commits_locally</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="mi">1</span><span class="si">}</span><span class="s2"> on &#39;</span><span class="si">#{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-12">#</a>
+        </div>
         <p>By comparing the merge_base to both HEAD and the remote, we can
 determine whether both or only one have moved on.
 If the remote hasn&rsquo;t changed, we&rsquo;re already up to date, so there&rsquo;s nothing
@@ -173,14 +187,14 @@ to pull.</p>
     <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-13'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-12">#</a>
+          <a class="octothorpe" href="#section-13">#</a>
         </div>
         <p>If the remote <em>has</em> moved on, we actually have some work to do:</p>
 
-<p>First, report how many commits are new on remote. Because that&rsquo;s useful information.</p>
+<p>First, report how many commits are new on remote. Because that&rsquo;s useful information, too.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>      <span class="n">new_commits_on_remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_list</span><span class="p">(</span><span class="n">merge_base</span><span class="p">,</span> <span class="n">remote</span><span class="p">)</span>
@@ -188,10 +202,10 @@ to pull.</p>
       <span class="n">note</span> <span class="s2">&quot;There </span><span class="si">#{</span><span class="n">is_are</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">new_commits_on_remote</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> new commit</span><span class="si">#{</span><span class="n">s_or_not</span><span class="si">}</span><span class="s2"> on &#39;</span><span class="si">#{</span><span class="n">upstream_branch</span><span class="si">}</span><span class="s2">&#39;.&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-14'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-13">#</a>
+          <a class="octothorpe" href="#section-14">#</a>
         </div>
         <p>Next, detect if there are local changes and stash them.</p>
       </td>
@@ -205,10 +219,10 @@ to pull.</p>
       <span class="n">success_messages</span> <span class="o">=</span> <span class="o">[]</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-14">#</a>
+          <a class="octothorpe" href="#section-15">#</a>
         </div>
         <p>Then, bring the local branch up to date.</p>
 
@@ -222,10 +236,10 @@ to pull.</p>
       <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-15">#</a>
+          <a class="octothorpe" href="#section-16">#</a>
         </div>
         <p>If our local branch has new commits, we need to rebase them on top of master.</p>
 
@@ -239,10 +253,10 @@ instead of ignoring them. For a description as to why, see my <a href="(https://
       <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-17'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-16">#</a>
+          <a class="octothorpe" href="#section-17">#</a>
         </div>
         <p>If we stashed before, pop now.</p>
       </td>
@@ -253,10 +267,10 @@ instead of ignoring them. For a description as to why, see my <a href="(https://
       <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-18'>
       <td class=docs>
         <div class="octowrap">
-          <a class="octothorpe" href="#section-17">#</a>
+          <a class="octothorpe" href="#section-18">#</a>
         </div>
         <p>Display a nice completion message in large, friendly letters.</p>
 
