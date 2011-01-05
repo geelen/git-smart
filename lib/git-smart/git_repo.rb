@@ -60,10 +60,10 @@ class GitRepo
       map_values { |lines| lines.map(&:last) }.
       map_keys { |status|
         case status
-          when /^M/; :modified
-          when /^A/; :added
-          when /^\?\?/; :untracked
-          when /^UU/; :conflicted
+          when /^[^ ]*M/; :modified
+          when /^[^ ]*A/; :added
+          when /^[^ ]*\?\?/; :untracked
+          when /^[^ ]*UU/; :conflicted
           else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{raw_status}")
         end
       }
