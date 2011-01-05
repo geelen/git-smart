@@ -40,8 +40,8 @@ Git allows custom commands with a simple convention - `git xyz` tries to find an
 
 The code for each of these commands has been annotated with comments and rendered with [Rocco](https://github.com/rtomayko/rocco):
 
-- [smart-pull](https://github.com/geelen/git-smart/raw/master/docs/smart-pull.html)
-- [smart-merge](https://github.com/geelen/git-smart/raw/master/docs/smart-merge.html)
+- [smart-pull](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-pull.html)
+- [smart-merge](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-merge.html)
 
 # Contributing to git-smart
 
