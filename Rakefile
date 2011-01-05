@@ -71,3 +71,5 @@ GitSmart.run('#{cmd}', ARGV)
     puts "Wrote #{filename}"
   }
 end
+
+task :gemspec => :generate_binaries
