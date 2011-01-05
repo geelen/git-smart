@@ -17,6 +17,12 @@ All you need to do is grab the gem:
 
 That'll put an executable file for each command as a gem executable. They can be removed by uninstalling the gem.
 
+You almost certainly want to run this as well, to allow git commands to be output with colour:
+
+    git config --global color.ui always
+
+Git normally only colours output when being run from the terminal, not from within scripts like these. This sorts that right out.
+  
 # Using
 
 Git allows custom commands with a simple convention - `git xyz` tries to find an executable `git-xyz` on the path. So, to run the commands, simply type
