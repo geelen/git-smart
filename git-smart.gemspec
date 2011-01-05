@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.date = %q{2011-01-05}
   s.description = %q{Installs some additional 'smart' git commands, like `git smart-pull`.}
   s.email = %q{glenmaddern@gmail.com}
-  s.executables = ["git-smart-pull", ".gitkeep", "git-smart-merge"]
+  s.executables = ["git-smart-pull", "git-smart-merge"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -24,9 +24,6 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "VERSION",
-    "bin/.gitkeep",
-    "bin/git-smart-merge",
-    "bin/git-smart-pull",
     "docs/images/git-smart.png",
     "docs/smart-merge.html",
     "docs/smart-pull.html",
