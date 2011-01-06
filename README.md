@@ -7,7 +7,6 @@ Adds some additional git commands to add some smarts to your workflow. These com
 0. It should do the 'right thing' in all situations - an inexperienced git user should be guided away from making simple mistakes.
 0. It should make every attempt to explain to the user what decisions it has made, and why.
 0. All git commands that modify the repository should be shown to the user - hopefully this helps the user eventually learn the underlying git commands, and when they're relevant.
-0. All git commands, destructive or not, and their output should be shown to the user with the -v/--verbose flag. (not implemented yet)
 
 ## Installing
 
