@@ -97,8 +97,8 @@ class GitRepo
     read_log(nr).map(&:last)
   end
 
-  def log!(*args)
-    git!('log', *args)
+  def log_to_shell(*args)
+    git_shell('log', *args)
   end
 
   def merge_no_ff!(target)
@@ -118,6 +118,13 @@ class GitRepo
     to_display = output.split("\n").map { |l| "  #{l}" }.join("\n")
     $?.success? ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
     output
+  end
+
+  def git_shell(*args)
+    puts "Executing: #{['git', *args].join(" ")}"
+    Dir.chdir(@dir) {
+      system('git', *args)
+    }
   end
 
   def config(name)
