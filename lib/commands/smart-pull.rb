@@ -105,5 +105,10 @@ GitSmart.register 'smart-pull' do |repo, args|
       success ["All good.", *success_messages].join(" ")
     end
 
+    #Still to do:
+    #
+    #* Ensure ORIG_HEAD is correctly set at the end of each run.
+    #* If the rebase fails, and you've done a stash, remind the user to unstash
+
   end
 end
