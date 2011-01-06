@@ -53,12 +53,12 @@ end
 
 RSpec::Matchers.define :have_last_few_commits do |expected|
   failure_message_for_should do |dir|
-    "expected '#{dir}' to have last few commits of #{expected.inspect}, got #{GitRepo.new(dir).log_commit_messages(expected.length).inspect}"
+    "expected '#{dir}' to have last few commits of #{expected.inspect}, got #{GitRepo.new(dir).last_commit_messages(expected.length).inspect}"
   end
   failure_message_for_should_not do |actual|
-    "expected '#{dir}' to not have git status of #{expected.inspect}, got #{GitRepo.new(dir).log_commit_messages(expected.length).inspect}"
+    "expected '#{dir}' to not have git status of #{expected.inspect}, got #{GitRepo.new(dir).last_commit_messages(expected.length).inspect}"
   end
   match do |dir|
-    GitRepo.new(dir).log_commit_messages(expected.length) == expected
+    GitRepo.new(dir).last_commit_messages(expected.length) == expected
   end
 end

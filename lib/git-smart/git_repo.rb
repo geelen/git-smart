@@ -89,12 +89,16 @@ class GitRepo
     git!('rebase', '-p', upstream)
   end
 
-  def log(nr)
+  def read_log(nr)
     git('log', '--oneline', '-n', nr.to_s).split("\n").map { |l| l.split(" ",2) }
   end
 
-  def log_commit_messages(nr)
-    log(nr).map(&:last)
+  def last_commit_messages(nr)
+    read_log(nr).map(&:last)
+  end
+
+  def log_to_shell(*args)
+    git_shell('log', *args)
   end
 
   def merge_no_ff!(target)
@@ -114,6 +118,13 @@ class GitRepo
     to_display = output.split("\n").map { |l| "  #{l}" }.join("\n")
     $?.success? ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
     output
+  end
+
+  def git_shell(*args)
+    puts "Executing: #{['git', *args].join(" ")}"
+    Dir.chdir(@dir) {
+      system('git', *args)
+    }
   end
 
   def config(name)

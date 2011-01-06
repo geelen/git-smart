@@ -24,7 +24,7 @@ Git normally only colours output when being run from the terminal, not from with
   
 ## Get smart!
 
-There's only two commands at this point, but there'll be more!
+There's only three commands at this point, but there'll be more!
 
 ### smart-pull
 
@@ -34,11 +34,23 @@ In brief, it'll detect the best way to grab the changes from the server and upda
 
 Read what it does in detail: [smart-pull](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-pull.html)
 
+Recommended alias to use: `gup`
+
 ### smart-merge
 
 Run `git smart-merge` when you would have run `git merge`. This is basically a wrapper around `git merge --no-ff`, which should have been the default anyway. It also does a stash/pop if required, and reports a bit of helpful output.
 
 Details here: [smart-merge](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-merge.html)
+
+Recommended alias to use: `gm`
+
+### smart-log
+
+Big hat tip to [@ben\_h](http://twitter.com/ben_h) for this one - it's an alias to a completely badass git log format that not many people know about.
+
+Details here: [smart-log](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-log.html)
+
+Recommended alias to use: `gl`
 
 ## Contributing to git-smart
 

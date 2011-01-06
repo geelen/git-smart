@@ -47,7 +47,9 @@ end
 
 desc "Generate the rocco docs"
 task :rocco do
-  %x[cd lib/commands && rocco *.rb -o ../../docs]
+  base_dir = File.dirname(__FILE__)
+  %x[cd #{base_dir}/lib/commands && rocco *.rb -o ../../docs]
+  %x[cd #{base_dir} && git add docs]
 end
 
 task :release => :rocco
@@ -72,6 +74,7 @@ GitSmart.run('#{cmd}', ARGV)
 }
     }
     `chmod a+x #{filename}`
+    `cd #{base_dir} && git add #{filename}`
     puts "Wrote #{filename}"
   }
 end
