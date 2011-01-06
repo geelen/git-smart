@@ -14,7 +14,7 @@ All you need to do is grab the gem:
 
     gem install git-smart
 
-Git allows custom commands with a simple convention - `git xyz` looks for `git-xyz` on the path, so that'll install a binary for each command e.g. `git-smart-pull`. They'll be removed when you uninstall the gem.
+This will add an executable for each command, e.g. `git-smart-pull`. You call them using git's simple syntax for [custom commands](http://www.nullstyle.com/2007/06/22/create-custom-commands-in-git/), e.g. `git smart-pull`. They'll be removed when you uninstall the gem.
 
 You almost certainly want to run this as well, to allow git commands to be output with colour:
 
