@@ -1,12 +1,10 @@
 module SafeShell
   def self.execute(command, *args)
-    $stdout.sync = true
-    $stderr.sync = true
     read_end, write_end = IO.pipe
     pid = fork do
       read_end.close
-      $stdout.reopen(write_end)
-      $stderr.reopen(write_end)
+      STDOUT.reopen(write_end)
+      STDERR.reopen(write_end)
       exec(command, *args)
     end
     write_end.close
