@@ -21,7 +21,7 @@ You almost certainly want to run this as well, to allow git commands to be outpu
     git config --global color.ui always
 
 Git normally only colours output when being run from the terminal, not from within scripts like these. This sorts that right out.
-  
+
 ## Get smart!
 
 There's only three commands at this point, but there'll be more!
@@ -64,5 +64,5 @@ Recommended alias to use: `gl`
 
 ## Copyright
 
-Copyright (c) 2011 Glen Maddern. See LICENSE.txt for
+Copyright (c) 2011 Glen Maddern and Envato Pty Ltd. See LICENSE.txt for
 further details.
