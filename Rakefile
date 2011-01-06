@@ -72,6 +72,7 @@ GitSmart.run('#{cmd}', ARGV)
 }
     }
     `chmod a+x #{filename}`
+    `cd #{base_dir} && git add #{filename}`
     puts "Wrote #{filename}"
   }
 end

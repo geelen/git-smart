@@ -89,12 +89,16 @@ class GitRepo
     git!('rebase', '-p', upstream)
   end
 
-  def log(nr)
+  def read_log(nr)
     git('log', '--oneline', '-n', nr.to_s).split("\n").map { |l| l.split(" ",2) }
   end
 
-  def log_commit_messages(nr)
-    log(nr).map(&:last)
+  def last_commit_messages(nr)
+    read_log(nr).map(&:last)
+  end
+
+  def log!(*args)
+    git!('log', *args)
   end
 
   def merge_no_ff!(target)
