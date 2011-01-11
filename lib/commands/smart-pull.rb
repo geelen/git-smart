@@ -3,7 +3,7 @@
 #smarter version of `git pull --rebase`.
 #
 #For some background as to why this is needed, see [my blog
-#post about the perils of rebasing merge commits](https://gist.github.com/591209)
+#post about the perils of rebasing merge commits](http://notes.envato.com/developers/rebasing-merge-commits-in-git/)
 #
 #This is how it works:
 
@@ -89,7 +89,7 @@ GitSmart.register 'smart-pull' do |repo, args|
         #If our local branch has new commits, we need to rebase them on top of master.
         #
         #When we rebase, we use `git rebase -p`, which attempts to recreate merges
-        #instead of ignoring them. For a description as to why, see my [blog post]((https://gist.github.com/591209).
+        #instead of ignoring them. For a description as to why, see my [blog post](http://notes.envato.com/developers/rebasing-merge-commits-in-git/).
         note "Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'"
         repo.rebase_preserving_merges!(upstream_branch)
         success_messages << "HEAD moved from #{head[0,7]} to #{repo.sha('HEAD')[0,7]}."
