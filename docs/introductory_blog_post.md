@@ -40,3 +40,4 @@ Use this in place of `git log`. I'll let the output speak for itself:
 
 Check out the [code itself](http://github-displayer.heroku.com/geelen/git-smart/raw/master/docs/smart-pull.html). Hat tip to [@ben_h](http://twitter.com/ben_h) for the guts of this.
 
+Also, if you're on OSX and not using [brotherbard's fork of gitx](https://github.com/brotherbard/gitx/wiki), you really should be. It's absolutely the best way to navigate through a git project's history.
