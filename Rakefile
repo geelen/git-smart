@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -7,20 +8,8 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
-require 'rake'
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "git-smart"
-  gem.homepage = "http://github.com/geelen/git-smart"
-  gem.license = "MIT"
-  gem.summary = %Q{Add some smarts to your git workflow}
-  gem.description = %Q{Installs some additional 'smart' git commands, like `git smart-pull`.}
-  gem.email = "glenmaddern@gmail.com"
-  gem.authors = ["Glen Maddern"]
-end
-Jeweler::RubygemsDotOrgTasks.new
+require 'rake'
 
 require 'rspec/core'
 require 'rspec/core/rake_task'
@@ -35,7 +24,7 @@ end
 
 task :default => :spec
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
@@ -79,4 +68,4 @@ GitSmart.run('#{cmd}', ARGV)
   }
 end
 
-task :gemspec => :generate_binaries
+task :build => :generate_binaries

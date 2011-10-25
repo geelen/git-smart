@@ -101,6 +101,9 @@ GitSmart.register 'smart-pull' do |repo, args|
         repo.stash_pop!
       end
 
+      #Use smart-log to show the new commits.
+      GitSmart.run('smart-log', ["#{merge_base}..#{upstream_branch}"])
+
       #Display a nice completion message in large, friendly letters.
       success ["All good.", *success_messages].join(" ")
     end
