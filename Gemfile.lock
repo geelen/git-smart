@@ -2,35 +2,27 @@ GEM
   remote: http://rubygems.org/
   specs:
     colorize (0.5.8)
-    diff-lcs (1.1.2)
-    git (1.2.5)
-    jeweler (1.5.2)
-      bundler (~> 1.0.0)
-      git (>= 1.2.5)
-      rake
-    mustache (0.12.0)
-    rake (0.8.7)
-    rcov (0.9.8)
-    rdiscount (1.6.5)
-    rocco (0.5)
+    diff-lcs (1.1.3)
+    mustache (0.99.4)
+    rcov (0.9.11)
+    redcarpet (1.17.2)
+    rocco (0.8.2)
       mustache
-      rdiscount
-    rspec (2.3.0)
-      rspec-core (~> 2.3.0)
-      rspec-expectations (~> 2.3.0)
-      rspec-mocks (~> 2.3.0)
-    rspec-core (2.3.1)
-    rspec-expectations (2.3.0)
+      redcarpet
+    rspec (2.7.0)
+      rspec-core (~> 2.7.0)
+      rspec-expectations (~> 2.7.0)
+      rspec-mocks (~> 2.7.0)
+    rspec-core (2.7.1)
+    rspec-expectations (2.7.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.3.0)
+    rspec-mocks (2.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.0.0)
   colorize
-  jeweler (~> 1.5.2)
   rcov
   rocco
-  rspec (~> 2.3.0)
+  rspec
