@@ -64,7 +64,7 @@ class GitRepo
           when /^[^ ]*A/; :added
           when /^[^ ]*\?\?/; :untracked
           when /^[^ ]*UU/; :conflicted
-          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A,M, or ??. Got: \n#{raw_status}")
+          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A, M, UU, or ??. Got: \n#{raw_status}")
         end
       }
   end
