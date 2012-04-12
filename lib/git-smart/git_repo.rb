@@ -2,7 +2,10 @@ class GitRepo
   def initialize(dir)
     @dir = dir
     if !File.exists? File.join(@dir, ".git")
-      raise GitSmart::RunFailed.new("You need to run this from within a git directory")
+      @dir = git('rev-parse', '--show-toplevel').chomp
+      if !File.exists? File.join(@dir, ".git")
+        raise GitSmart::RunFailed.new("You need to run this from within a git directory")
+      end
     end
   end
 
