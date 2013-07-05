@@ -82,7 +82,7 @@ class GitRepo
   end
 
   def stash!
-    git!('stash')
+    !git!('stash').split("\n").include?("No local changes to save")
   end
 
   def stash_pop!
