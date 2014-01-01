@@ -165,4 +165,40 @@ describe 'smart-pull' do
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
     end
   end
+
+  context 'with a submodule' do
+    before do
+      %x[
+      cd #{WORKING_DIR}
+        mkdir submodule
+        cd submodule
+          git init
+          git config --local user.name 'The Chief'
+          git config --local user.email 'agentq@control.gov'
+          git config --local core.pager 'cat'
+          echo 'Unusual, but effective.' > README
+          git add .
+          git commit -m 'first'
+        cd ..
+        cd local
+          git submodule add "${PWD}/../submodule/.git" submodule
+          git commit -am 'Add submodule'
+      ]
+    end
+    let(:submodule_dir) { local_dir + '/submodule' }
+
+    it 'can smart-pull the repo containing the submodule' do
+      out = run_command(local_dir, 'smart-pull')
+      out.should report('Executing: git fetch origin')
+      out.should report("Remote branch 'origin/master' has not moved on.")
+      out.should report("You have 1 new commit on 'master'.")
+    end
+
+    it 'can smart-pull the submodule' do
+      out = run_command(submodule_dir, 'smart-pull')
+      out.should report('Executing: git fetch origin')
+      out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
+      out.should report('Already up-to-date')
+    end
+  end
 end
