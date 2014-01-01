@@ -13,6 +13,7 @@ describe 'smart-merge with failures' do
           git init
           git config --local user.name 'Maxwell Smart'
           git config --local user.email 'agent86@control.gov'
+          git config --local core.pager 'cat'
           echo -e 'one\ntwo\nthree\nfour\n' > README
           mkdir lib
           echo 'puts "pro hax"' > lib/codes.rb

@@ -14,6 +14,7 @@ describe 'smart-pull' do
           git init
           git config --local user.name 'Maxwell Smart'
           git config --local user.email 'agent86@control.gov'
+          git config --local core.pager 'cat'
           echo 'hurr durr' > README
           mkdir lib
           echo 'puts "pro hax"' > lib/codes.rb
@@ -24,6 +25,7 @@ describe 'smart-pull' do
         cd local
           git config --local user.name 'Agent 99'
           git config --local user.email 'agent99@control.gov'
+          git config --local core.pager 'cat'
     ]
   end
 
