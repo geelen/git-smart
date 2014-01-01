@@ -20,8 +20,10 @@ describe 'smart-pull' do
           git add .
           git commit -m 'first'
         cd ..
-
         git clone remote/.git local
+        cd local
+          git config --local user.name 'Agent 99'
+          git config --local user.email 'agent99@control.gov'
     ]
   end
 
