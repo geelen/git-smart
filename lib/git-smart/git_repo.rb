@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'yaml'
+require 'pathname'
 
 class GitRepo
   def initialize(dir)
@@ -17,16 +18,16 @@ class GitRepo
   end
 
   def git_dir
-    gitdir = File.join(@dir, '.git')
+    gitdir = Pathname.new(@dir).join('.git')
 
     unless File.exists?(gitdir)
       @dir = git('rev-parse', '--show-toplevel').chomp
-      gitdir = File.join(@dir, '.git') unless @dir.empty?
+      gitdir = Pathname.new(@dir).join('.git') unless @dir.empty?
     end
 
     if File.file?(gitdir)
       submodule = YAML.load_file(gitdir)
-      gitdir = File.join(@dir, submodule['gitdir'])
+      gitdir = Pathname.new(@dir).join(submodule['gitdir']).to_path
     end
 
     gitdir
