@@ -1,16 +1,35 @@
+# encoding: utf-8
+
+require 'yaml'
+
 class GitRepo
   def initialize(dir)
     @dir = dir
-    if !File.exists? File.join(@dir, ".git")
-      @dir = git('rev-parse', '--show-toplevel').chomp
-      if !File.exists? File.join(@dir, ".git")
-        raise GitSmart::RunFailed.new("You need to run this from within a git directory")
-      end
+    unless File.directory?(git_dir)
+      raise GitSmart::RunFailed.new(
+        'You need to run this from within a git directory')
     end
   end
 
+  def git_dir
+    gitdir = File.join(@dir, '.git')
+
+    unless File.exists?(gitdir)
+      @dir = git('rev-parse', '--show-toplevel').chomp
+      gitdir = File.join(@dir, '.git')
+    end
+
+    if File.file?(gitdir)
+      submodule = YAML.load_file(gitdir)
+      gitdir = File.join(@dir, submodule['gitdir'])
+    end
+
+    gitdir
+  end
+
   def current_branch
-    File.read(File.join(@dir, ".git", "HEAD")).strip.sub(/^.*refs\/heads\//, '')
+    head_file = File.join(git_dir, 'HEAD')
+    File.read(head_file).strip.sub(%r(^.*refs/heads/), '')
   end
 
   def sha(ref)
