@@ -12,14 +12,20 @@ describe 'smart-pull' do
         mkdir remote
         cd remote
           git init
+          git config --local user.name 'Maxwell Smart'
+          git config --local user.email 'agent86@control.gov'
+          git config --local core.pager 'cat'
           echo 'hurr durr' > README
           mkdir lib
           echo 'puts "pro hax"' > lib/codes.rb
           git add .
           git commit -m 'first'
         cd ..
-
         git clone remote/.git local
+        cd local
+          git config --local user.name 'Agent 99'
+          git config --local user.email 'agent99@control.gov'
+          git config --local core.pager 'cat'
     ]
   end
 
@@ -68,7 +74,7 @@ describe 'smart-pull' do
       out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
       out.should report("Executing: git merge --ff-only origin/master")
       out.should report(/Updating [^\.]+..[^\.]+/)
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
     end
 
     it "should not stash before fast-forwarding if untracked files are present" do
@@ -79,7 +85,7 @@ describe 'smart-pull' do
       local_dir.should have_git_status({:untracked => ['noob']})
       out = run_command(local_dir, 'smart-pull')
       out.should report("Executing: git merge --ff-only origin/master")
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
       local_dir.should have_git_status({:untracked => ['noob']})
     end
 
@@ -95,7 +101,7 @@ describe 'smart-pull' do
       out.should report("Working directory dirty. Stashing...")
       out.should report("Executing: git stash")
       out.should report("Executing: git merge --ff-only origin/master")
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
       out.should report("Reapplying local changes...")
       out.should report("Executing: git stash pop")
       local_dir.should have_git_status({:added => ['noob'], :modified => ['lib/codes.rb']})
