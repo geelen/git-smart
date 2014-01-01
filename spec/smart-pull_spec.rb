@@ -201,4 +201,15 @@ describe 'smart-pull' do
       out.should report('Already up-to-date')
     end
   end
+
+  context 'outside of a repo' do
+    it 'should report a meaningful error' do
+      Dir.mktmpdir do |non_repo_dir|
+        out = run_command(non_repo_dir, 'smart-pull')
+        out.should report 'You need to run this from within a Git directory'
+        out.should report 'Current working directory: '
+        out.should report 'Expected .git directory: '
+      end
+    end
+  end
 end

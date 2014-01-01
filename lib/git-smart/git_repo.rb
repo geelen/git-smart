@@ -7,7 +7,12 @@ class GitRepo
     @dir = dir
     unless File.directory?(git_dir)
       raise GitSmart::RunFailed.new(
-        'You need to run this from within a git directory')
+        <<-MSG.gsub(/^\s+/, '')
+        You need to run this from within a Git directory.
+        Current working directory: #{File.expand_path(dir)}
+        Expected .git directory: #{git_dir}
+        MSG
+      )
     end
   end
 
@@ -16,7 +21,7 @@ class GitRepo
 
     unless File.exists?(gitdir)
       @dir = git('rev-parse', '--show-toplevel').chomp
-      gitdir = File.join(@dir, '.git')
+      gitdir = File.join(@dir, '.git') unless @dir.empty?
     end
 
     if File.file?(gitdir)
@@ -158,6 +163,7 @@ class GitRepo
   private
 
   def exec_git(*args)
+    return if @dir.empty?
     Dir.chdir(@dir) {
       SafeShell.execute('git', *args)
     }
