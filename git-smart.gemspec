@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{git-smart}
-  s.version = "0.1.9"
+  s.version = "0.1.10"
 
   s.authors = ["Glen Maddern"]
   s.email = %q{glenmaddern@gmail.com}
