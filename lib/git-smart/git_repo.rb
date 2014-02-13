@@ -1,16 +1,41 @@
+# encoding: utf-8
+
+require 'yaml'
+require 'pathname'
+
 class GitRepo
   def initialize(dir)
     @dir = dir
-    if !File.exists? File.join(@dir, ".git")
-      @dir = git('rev-parse', '--show-toplevel').chomp
-      if !File.exists? File.join(@dir, ".git")
-        raise GitSmart::RunFailed.new("You need to run this from within a git directory")
-      end
+    unless File.directory?(git_dir)
+      raise GitSmart::RunFailed.new(
+        <<-MSG.gsub(/^\s+/, '')
+        You need to run this from within a Git directory.
+        Current working directory: #{File.expand_path(dir)}
+        Expected .git directory: #{git_dir}
+        MSG
+      )
     end
   end
 
+  def git_dir
+    gitdir = Pathname.new(@dir).join('.git')
+
+    unless File.exists?(gitdir)
+      @dir = git('rev-parse', '--show-toplevel').chomp
+      gitdir = Pathname.new(@dir).join('.git') unless @dir.empty?
+    end
+
+    if File.file?(gitdir)
+      submodule = YAML.load_file(gitdir)
+      gitdir = Pathname.new(@dir).join(submodule['gitdir']).to_path
+    end
+
+    gitdir
+  end
+
   def current_branch
-    File.read(File.join(@dir, ".git", "HEAD")).strip.sub(/^.*refs\/heads\//, '')
+    head_file = File.join(git_dir, 'HEAD')
+    File.read(head_file).strip.sub(%r(^.*refs/heads/), '')
   end
 
   def sha(ref)
@@ -139,6 +164,7 @@ class GitRepo
   private
 
   def exec_git(*args)
+    return if @dir.empty?
     Dir.chdir(@dir) {
       SafeShell.execute('git', *args)
     }

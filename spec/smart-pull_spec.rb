@@ -12,14 +12,20 @@ describe 'smart-pull' do
         mkdir remote
         cd remote
           git init
+          git config --local user.name 'Maxwell Smart'
+          git config --local user.email 'agent86@control.gov'
+          git config --local core.pager 'cat'
           echo 'hurr durr' > README
           mkdir lib
           echo 'puts "pro hax"' > lib/codes.rb
           git add .
           git commit -m 'first'
         cd ..
-
         git clone remote/.git local
+        cd local
+          git config --local user.name 'Agent 99'
+          git config --local user.email 'agent99@control.gov'
+          git config --local core.pager 'cat'
     ]
   end
 
@@ -68,7 +74,7 @@ describe 'smart-pull' do
       out.should report("Local branch 'master' has not moved on. Fast-forwarding.")
       out.should report("Executing: git merge --ff-only origin/master")
       out.should report(/Updating [^\.]+..[^\.]+/)
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
     end
 
     it "should not stash before fast-forwarding if untracked files are present" do
@@ -79,7 +85,7 @@ describe 'smart-pull' do
       local_dir.should have_git_status({:untracked => ['noob']})
       out = run_command(local_dir, 'smart-pull')
       out.should report("Executing: git merge --ff-only origin/master")
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
       local_dir.should have_git_status({:untracked => ['noob']})
     end
 
@@ -95,7 +101,7 @@ describe 'smart-pull' do
       out.should report("Working directory dirty. Stashing...")
       out.should report("Executing: git stash")
       out.should report("Executing: git merge --ff-only origin/master")
-      out.should report("1 files changed, 1 insertions(+), 0 deletions(-)")
+      out.should report(/1 files? changed, 1 insertions?\(\+\)(, 0 deletions\(-\))?$/)
       out.should report("Reapplying local changes...")
       out.should report("Executing: git stash pop")
       local_dir.should have_git_status({:added => ['noob'], :modified => ['lib/codes.rb']})
@@ -157,6 +163,53 @@ describe 'smart-pull' do
       out.should report("Successfully rebased and updated refs/heads/master.")
       local_dir.should have_git_status({:added => ['noob'], :modified => ['lib/codes.rb']})
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
+    end
+  end
+
+  context 'with a submodule' do
+    before do
+      %x[
+      cd #{WORKING_DIR}
+        mkdir submodule
+        cd submodule
+          git init
+          git config --local user.name 'The Chief'
+          git config --local user.email 'agentq@control.gov'
+          git config --local core.pager 'cat'
+          echo 'Unusual, but effective.' > README
+          git add .
+          git commit -m 'first'
+        cd ..
+        cd local
+          git submodule add "${PWD}/../submodule/.git" submodule
+          git commit -am 'Add submodule'
+      ]
+    end
+    let(:submodule_dir) { local_dir + '/submodule' }
+
+    it 'can smart-pull the repo containing the submodule' do
+      out = run_command(local_dir, 'smart-pull')
+      out.should report('Executing: git fetch origin')
+      out.should report("Remote branch 'origin/master' has not moved on.")
+      out.should report("You have 1 new commit on 'master'.")
+    end
+
+    it 'can smart-pull the submodule' do
+      out = run_command(submodule_dir, 'smart-pull')
+      out.should report('Executing: git fetch origin')
+      out.should report("Neither your local branch 'master', nor the remote branch 'origin/master' have moved on.")
+      out.should report('Already up-to-date')
+    end
+  end
+
+  context 'outside of a repo' do
+    it 'should report a meaningful error' do
+      Dir.mktmpdir do |non_repo_dir|
+        out = run_command(non_repo_dir, 'smart-pull')
+        out.should report 'You need to run this from within a Git directory'
+        out.should report 'Current working directory: '
+        out.should report 'Expected .git directory: '
+      end
     end
   end
 end

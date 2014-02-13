@@ -11,6 +11,9 @@ describe 'smart-merge' do
         mkdir local
         cd local
           git init
+          git config --local user.name 'Maxwell Smart'
+          git config --local user.email 'agent86@control.gov'
+          git config --local core.pager 'cat'
           echo 'hurr durr' > README
           mkdir lib
           echo 'puts "pro hax"' > lib/codes.rb
@@ -58,7 +61,7 @@ describe 'smart-merge' do
       out.should report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
       out.should report("* Branch 'master' has not moved on since 'newbranch' diverged. Running with --no-ff anyway, since a fast-forward is unexpected behaviour.")
       out.should report("Executing: git merge --no-ff newbranch")
-      out.should report("2 files changed, 2 insertions(+), 0 deletions(-)")
+      out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
       out.should report(/All good\. Created merge commit [\w]{7}\./)
     end
 
@@ -77,7 +80,7 @@ describe 'smart-merge' do
         out.should report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
         out.should report("Branch 'master' has 1 new commit since 'newbranch' diverged.")
         out.should report("Executing: git merge --no-ff newbranch")
-        out.should report("2 files changed, 2 insertions(+), 0 deletions(-)")
+        out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
         out.should report(/All good\. Created merge commit [\w]{7}\./)
       end
 
@@ -91,7 +94,7 @@ describe 'smart-merge' do
         out = run_command(local_dir, 'smart-merge', 'newbranch')
         out.should report("Executing: git stash")
         out.should report("Executing: git merge --no-ff newbranch")
-        out.should report("2 files changed, 2 insertions(+), 0 deletions(-)")
+        out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
         out.should report("Reapplying local changes...")
         out.should report("Executing: git stash pop")
         out.should report(/All good\. Created merge commit [\w]{7}\./)

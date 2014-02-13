@@ -1,4 +1,5 @@
 require 'rspec'
+require 'tmpdir'
 
 require File.dirname(__FILE__) + '/../lib/git-smart'
 
