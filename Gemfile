@@ -6,4 +6,5 @@ group :development do
   gem 'rspec'
   gem 'simplecov'
   gem 'rocco'
+  gem 'rake'
 end
