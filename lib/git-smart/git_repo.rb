@@ -68,8 +68,8 @@ class GitRepo
   end
 
   def exists?(ref)
-    git('rev-parse', ref)
-    $?.success?
+    output, successful = exec_git('rev-parse', ref)
+    successful
   end
 
   def rev_list(ref_a, ref_b)
@@ -137,15 +137,15 @@ class GitRepo
   # helper methods, left public in case other commands want to use them directly
 
   def git(*args)
-    output = exec_git(*args)
-    $?.success? ? output : ''
+    output, successful = exec_git(*args)
+    successful ? output : ''
   end
 
   def git!(*args)
     puts "Executing: #{['git', *args].join(" ")}"
-    output = exec_git(*args)
+    output, successful = exec_git(*args)
     to_display = output.split("\n").map { |l| "  #{l}" }.join("\n")
-    $?.success? ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
+    successful ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
     output
   end
 
@@ -164,9 +164,10 @@ class GitRepo
   private
 
   def exec_git(*args)
-    return if @dir.empty?
+    return '', false if @dir.empty?
     Dir.chdir(@dir) {
-      SafeShell.execute('git', *args)
+      output, exit_status = SafeShell.execute('git', *args)
+      return output, exit_status.success?
     }
   end
 end

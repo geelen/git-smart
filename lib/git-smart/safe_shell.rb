@@ -1,21 +1,21 @@
+require 'open3'
+
 module SafeShell
   def self.execute(command, *args)
-    read_end, write_end = IO.pipe
-    pid = fork do
-      read_end.close
-      STDOUT.reopen(write_end)
-      STDERR.reopen(write_end)
-      exec(command, *args)
+    cmd = [].push(command).push(args).join(' ')
+    result = ""
+    exit_status = nil
+
+    Open3.popen2e (cmd) do |stdin, out, wait_thr|
+      exit_status = wait_thr.value
+      result = out.read
     end
-    write_end.close
-    output = read_end.read
-    Process.waitpid(pid)
-    read_end.close
-    output
+
+    return result, exit_status
   end
 
   def self.execute?(*args)
-    execute(*args)
-    $?.success?
+    output, exit_status = execute(*args)
+    exit_status.success?
   end
 end
