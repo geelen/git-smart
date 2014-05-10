@@ -7,11 +7,8 @@ module SafeShell
     exit_status = nil
 
     Open3.popen2e (cmd) do |stdin, out, wait_thr|
-      while line = out.gets
-        result += line
-      end
-
       exit_status = wait_thr.value
+      result = out.read
     end
 
     return result, exit_status

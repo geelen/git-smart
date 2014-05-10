@@ -60,7 +60,7 @@ class GitRepo
   end
 
   def fetch!(remote)
-    git!('fetch', remote, '--verbose')
+    git!('fetch', remote)
   end
 
   def merge_base(ref_a, ref_b)
