@@ -70,10 +70,10 @@ GitSmart.register 'smart-pull' do |repo, args|
       note "There #{is_are} #{new_commits_on_remote.length} new commit#{s_or_not} on '#{upstream_branch}'."
 
       #Next, detect if there are local changes and stash them.
-      stash_required = repo.dirty?
-      if stash_required
+      pop_required = false
+      if repo.dirty?
         note "Working directory dirty. Stashing..."
-        repo.stash!
+        pop_required = repo.stash!
       end
 
       success_messages = []
@@ -95,8 +95,8 @@ GitSmart.register 'smart-pull' do |repo, args|
         success_messages << "HEAD moved from #{head[0,7]} to #{repo.sha('HEAD')[0,7]}."
       end
 
-      #If we stashed before, pop now.
-      if stash_required
+      #If we successfully stashed before, pop now.
+      if pop_required
         note "Reapplying local changes..."
         repo.stash_pop!
       end
