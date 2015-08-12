@@ -36,6 +36,21 @@ describe 'smart-pull' do
     out.should report("Already up-to-date")
   end
 
+  context "with a smart-pull-pre-fetch hook" do
+    before :each do
+      %x[
+        cd #{local_dir}
+          printf '#!/bin/bash\n\necho running hook...done\n' > .git/hooks/smart-pull-pre-fetch
+          chmod 755 .git/hooks/smart-pull-pre-fetch
+      ]
+    end
+
+    it "should run the hook" do
+      out = run_command(local_dir, 'smart-pull')
+      out.should report("running hook...done")
+    end
+  end
+
   context "with only local changes" do
     before :each do
       %x[
