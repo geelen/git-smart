@@ -115,7 +115,7 @@ class GitRepo
   end
 
   def rebase_preserving_merges!(upstream)
-    git!('rebase', '-p', upstream)
+    git!('rebase', '--rebase-merges', upstream)
   end
 
   def read_log(nr)
