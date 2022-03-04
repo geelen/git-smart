@@ -164,6 +164,21 @@ describe 'smart-pull' do
       local_dir.should have_git_status({:added => ['noob'], :modified => ['lib/codes.rb']})
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
     end
+
+    it "should stash, rebase, pop if there are local renamed files" do
+      %x[
+        cd #{local_dir}
+          git mv lib/codes.rb lib/codes2.rb
+      ]
+      local_dir.should have_git_status({:renamed=>["lib/codes2.rb"]})
+      out = run_command(local_dir, 'smart-pull')
+      out.should report("Working directory dirty. Stashing...")
+      out.should report("Executing: git stash")
+      out.should report("Executing: git rebase -p origin/master")
+      out.should report("Successfully rebased and updated refs/heads/master.")
+      local_dir.should have_git_status({:deleted=>["lib/codes.rb"], :added=>["lib/codes2.rb"]})
+      local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
+    end
   end
 
   context 'with a submodule' do

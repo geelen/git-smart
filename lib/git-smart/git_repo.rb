@@ -90,10 +90,11 @@ class GitRepo
         case status
           when /^[^ ]*M/; :modified
           when /^[^ ]*A/; :added
+          when /^[^ ]*R/; :renamed
           when /^[^ ]*D/; :deleted
           when /^[^ ]*\?\?/; :untracked
           when /^[^ ]*UU/; :conflicted
-          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A, M, D, UU, or ??. Got: \n#{raw_status}")
+          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A, M, R, D, UU, or ??. Got: \n#{raw_status}")
         end
       }
   end
