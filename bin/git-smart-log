@@ -4,4 +4,5 @@ $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib'))
 
 require 'git-smart'
 
+$stdout = STDERR
 GitSmart.run('smart-log', ARGV)
