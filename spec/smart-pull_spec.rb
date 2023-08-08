@@ -130,7 +130,7 @@ describe 'smart-pull' do
       out.should report("There is 1 new commit on 'origin/master'.")
       out.should report("You have 1 new commit on 'master'.")
       out.should report("Both local and remote branches have moved on. Branch 'master' needs to be rebased onto 'origin/master'")
-      out.should report("Executing: git rebase -p origin/master")
+      out.should report("Executing: git rebase --rebase-merges origin/master")
       out.should report("Successfully rebased and updated refs/heads/master.")
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
     end
@@ -142,7 +142,7 @@ describe 'smart-pull' do
       ]
       local_dir.should have_git_status({:untracked => ['noob']})
       out = run_command(local_dir, 'smart-pull')
-      out.should report("Executing: git rebase -p origin/master")
+      out.should report("Executing: git rebase --rebase-merges origin/master")
       out.should report("Successfully rebased and updated refs/heads/master.")
       local_dir.should have_git_status({:untracked => ['noob']})
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
@@ -159,7 +159,7 @@ describe 'smart-pull' do
       out = run_command(local_dir, 'smart-pull')
       out.should report("Working directory dirty. Stashing...")
       out.should report("Executing: git stash")
-      out.should report("Executing: git rebase -p origin/master")
+      out.should report("Executing: git rebase --rebase-merges origin/master")
       out.should report("Successfully rebased and updated refs/heads/master.")
       local_dir.should have_git_status({:added => ['noob'], :modified => ['lib/codes.rb']})
       local_dir.should have_last_few_commits(['local changes', 'upstream changes', 'first'])
@@ -181,7 +181,7 @@ describe 'smart-pull' do
           git commit -m 'first'
         cd ..
         cd local
-          git submodule add "${PWD}/../submodule/.git" submodule
+          git -c protocol.file.allow=always submodule add "${PWD}/../submodule/.git" submodule
           git commit -am 'Add submodule'
       ]
     end
