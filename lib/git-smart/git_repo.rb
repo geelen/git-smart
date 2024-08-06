@@ -20,7 +20,7 @@ class GitRepo
   def git_dir
     gitdir = Pathname.new(@dir).join('.git')
 
-    unless File.exists?(gitdir)
+    unless File.exist?(gitdir)
       @dir = git('rev-parse', '--show-toplevel').chomp
       gitdir = Pathname.new(@dir).join('.git') unless @dir.empty?
     end
