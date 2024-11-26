@@ -21,6 +21,9 @@ GitSmart.register 'smart-pull' do |repo, args|
     note("No tracking remote configured, assuming 'origin'") ||
     'origin'
 
+  # Run smart-pull-pre-fetch hook
+  repo.run_hook('smart-pull-pre-fetch')
+
   # Fetch the remote. This pulls down all new commits from the server, not just our branch,
   # but generally that's a good thing. This is the only communication we need to do with the server.
   repo.fetch!(tracking_remote)
