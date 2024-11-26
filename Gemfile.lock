@@ -7,7 +7,7 @@ GEM
     multi_json (1.8.2)
     mustache (0.99.4)
     rake (10.0.3)
-    redcarpet (1.17.2)
+    redcarpet (3.5.1)
     rocco (0.8.2)
       mustache
       redcarpet
