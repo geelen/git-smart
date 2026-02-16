@@ -59,6 +59,14 @@ class GitRepo
     end
   end
 
+  def run_hook(hook_file)
+    full_path = File.join(git_dir, 'hooks', hook_file)
+    if File.exists?(full_path)
+      output = SafeShell.execute(full_path)
+      $?.success? ? puts(output) : raise(GitSmart::UnexpectedOutput.new(output))
+    end
+  end
+
   def fetch!(remote)
     git!('fetch', remote)
   end
