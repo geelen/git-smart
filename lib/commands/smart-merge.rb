@@ -42,17 +42,17 @@ GitSmart.register 'smart-merge' do |repo, args|
     end
 
     #Before we merge, detect if there are local changes and stash them.
-    stash_required = repo.dirty?
-    if stash_required
+    pop_required = false
+    if repo.dirty?
       note "Working directory dirty. Stashing..."
-      repo.stash!
+      pop_required = repo.stash!
     end
 
     #Perform the merge, using --no-ff.
     repo.merge_no_ff!(merge_target)
 
-    #If we stashed before, pop now.
-    if stash_required
+    #If we successfully stashed before, pop now.
+    if pop_required
       note "Reapplying local changes..."
       repo.stash_pop!
     end
